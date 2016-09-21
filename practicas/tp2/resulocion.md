@@ -2,20 +2,36 @@
 
 # Notacion
 
-Seleccion => TITA
-Proyeccion => PI
-Producto Cartesiano => X
-Renombre => RO
-Union => U
-Diferencia => -
+· Proyección π
 
-Interseccion => IN
-Producto Theta => THETA
-Producto Natural => |X|
-Division => %
-Asignacion => <-
 
-π
+· Producto Theta |X|θ
+
+
+· Selección σ
+
+
+· Intersección ∩
+
+
+· Producto Cartesiano X
+
+· Renombre ρ
+
+
+· Unión U
+
+
+· Diferencia o Resta –
+
+· Producto Natural |X|
+
+
+· División %
+
+
+· Asignación ← 
+
 
 # Ejercicio 1
 
