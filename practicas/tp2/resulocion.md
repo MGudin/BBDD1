@@ -36,9 +36,11 @@
 · Asignación ←
 
 
+---
+
 ### Ejercicio 1
 
-1. Dados los siguientes esquemas:
+Dados los siguientes esquemas:
 
 
 **DUEÑO**(id\_dueño, nombre, teléfono, dirección, dni)
@@ -83,7 +85,7 @@ _CHOFER-AUTO_ **|X|** _CHOFER-LIC-CADUCA_
 
 ### Ejercicio 2
 
-2. Dados los siguientes esquemas
+Dados los siguientes esquemas
 
 
 **ALUMNO**(#alumno, nombre\_alumno, edad, provincia, beca)
@@ -142,7 +144,7 @@ _#ALUMNOS-BBDD_ **←**  **π**(#alumno) [_MATRICULA_ **|X|** [**π**(#asignatur
 ### Ejercicio 3
 
 
-3. Dados los siguientes esquemas
+Dados los siguientes esquemas
 
 
 **TIPOMUEBLE** (id\_tipomueble,descripción)
@@ -168,7 +170,7 @@ _#ALUMNOS-BBDD_ **←**  **π**(#alumno) [_MATRICULA_ **|X|** [**π**(#asignatur
 **Obtengo el los muebles segun su tipo de madera  y sus fabricantes**
 
 
-_MUEBLEFABRICANTE_ **←** **π**(id\_fabricante, id\_tipomadera) _MUEBLE_
+_MUEBLEFABRICANTE_ **←**  **π** (id\_fabricante, id\_tipomadera) _MUEBLE_
 
 
 **Saco los id de los fabricantes que estan relacionados con todas las maderas**
@@ -183,12 +185,28 @@ _FABRICANTEMADERA_ **←** _MUEBLEFABRICANTE_ **%** [**π**(id\_tipomadera) _TIP
 **π**(nombrefabricante) _FABRICANTE_ **|X|** _FABRICANTEMADERA_
 
 
+*b) Obtener los nombres de los fabricantes que sólo fabrican muebles en Pino*
 
 
+**primero obtengo el id de aquellos que fabricaron pino**
 
 
+_FABRICOPINO_ **←**  **π** (id\_fabricante) [ _MUEBLEFABRICANTE_ **|X|**(TIPOMADERA.nombremadera=pino) _TIPOMADERA_ ]
 
-b) Obtener los nombres de los fabricantes que sólo fabrican muebles en Pino
+
+**luego obtengo el id de los fabricantes sacando las de  pino**
+
+
+_NOFABRICOPINO_ **←**  **π**(id\_fabricante) [ _MUEBLEFABRICANTE_ **|X|**(TIPOMADERA.nombremadera!=pino) _TIPOMADERA_ ]
+
+
+**Finalmente aquellos que fabricaron pino y NO se encuentran en las de no pino fabricaron solo muebles de pino.
+De alli saco el nombre mediante el id**
+
+
+**π**(nombrefabricante) [ _FABRICANTE_ **|X|** [ _FABRICOPINO_ **–** _NOFABRICOPINO_ ] ]
+
+
 c) Obtener los nombres de los fabricantes que fabrican muebles para todos los ambientes
 d) Obtener los nombres de los fabricantes que sólo fabrican muebles para oficina
 e) Obtener los nombres de los fabricantes que sólo fabrican muebles para baño y cocina.
