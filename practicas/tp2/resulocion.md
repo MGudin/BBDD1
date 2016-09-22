@@ -38,7 +38,7 @@
 
 ### Ejercicio 1
 
-1- Dados los siguientes esquemas:
+1. Dados los siguientes esquemas:
 
 
 **DUEÑO**(id\_dueño, nombre, teléfono, dirección, dni)
@@ -78,8 +78,12 @@ _CHOFER-AUTO_ **←**  **π**(patente, id\_chofer) _AUTO_
 _CHOFER-AUTO_ **|X|** _CHOFER-LIC-CADUCA_
 
 
+---
 
-2) Dados los siguientes esquemas
+
+### Ejercicio 2
+
+2. Dados los siguientes esquemas
 
 
 **ALUMNO**(#alumno, nombre\_alumno, edad, provincia, beca)
@@ -97,19 +101,19 @@ _CHOFER-AUTO_ **|X|** _CHOFER-LIC-CADUCA_
 *a) Listar el nombre de los alumnos matriculados en todas las asignaturas de segundo año*
 
 
-*Primero obtengo todas las asignaturas de 2do anio*
+**Primero obtengo todas las asignaturas de 2do anio**
 
 
 _2DO-ANIO_ **←**  **π**(#asignatura) [ **σ**(anio=2) _ASIGNATURA_ ]
 
 
-*Obtengo aquellos numeros de alumno que estan matriculados en todas las asignatuas de 2do anio*
+**Obtengo aquellos numeros de alumno que estan matriculados en todas las asignatuas de 2do anio**
 
 
 _#ALUMNOS-MATRICULADOS_ **←**  **π**(#alumno) [ _MATRICULA_ **%** _2D0-ANIO_ ]
 
 
-*Por ultimo, teniendo todos los numeros de alumno matriculados en TODAS las materias de 2do anio, obtengo el nombre*
+**Por ultimo, teniendo todos los numeros de alumno matriculados en TODAS las materias de 2do anio, obtengo el nombre**
 
 
 
@@ -117,4 +121,77 @@ _#ALUMNOS-MATRICULADOS_ **←**  **π**(#alumno) [ _MATRICULA_ **%** _2D0-ANIO_ 
 
 
 
-b) Listar el #alumno de los alumnos que no estén matriculados en BBDD
+*b) Listar el #alumno de los alumnos que no estén matriculados en BBDD*
+
+
+**Obtengo la matricula de BBDD**
+
+
+_#ALUMNOS-BBDD_ **←**  **π**(#alumno) [_MATRICULA_ **|X|** [**π**(#asignatura) [ **σ**(nombre\_asignatura=BBDD) _ASIGNATURA_ ]]]
+
+
+**Saco el nro de alumno de ALUMNO y obtengo aquellos que NO estan en BBDD**
+
+
+**π**(#alumno) _ALUMNO_  **–** _#ALUMNOS-BBDD_
+
+
+---
+
+
+### Ejercicio 3
+
+
+3. Dados los siguientes esquemas
+
+
+**TIPOMUEBLE** (id\_tipomueble,descripción)
+
+
+**FABRICANTE** (id\_fabricante,nombrefabricante,cuit)
+
+
+**TIPOMADERA** (id\_tipomadera,nombremadera)
+
+
+**AMBIENTE** (id\_ambiente,descripcionambiente)
+
+
+**MUEBLE** (id\_mueble, id\_tipomueble, id\_fabricante, id\_tipomadera, precio, dimensiones, descripcion)
+
+
+**MUEBLEAMBIENTE** (id\_mueble,id_ambiente)
+
+
+*a) Obtener los nombres de los fabricante que fabrican muebles en todos los tipos de Madera*
+
+**Obtengo el los muebles segun su tipo de madera  y sus fabricantes**
+
+
+_MUEBLEFABRICANTE_ **←** **π**(id\_fabricante, id\_tipomadera) _MUEBLE_
+
+
+**Saco los id de los fabricantes que estan relacionados con todas las maderas**
+
+
+_FABRICANTEMADERA_ **←** _MUEBLEFABRICANTE_ **%** [**π**(id\_tipomadera) _TIPOMADERA_] 
+
+
+**Finalmente con los id de fabricante, obtengo los nombres**
+
+
+**π**(nombrefabricante) _FABRICANTE_ **|X|** _FABRICANTEMADERA_
+
+
+
+
+
+
+
+b) Obtener los nombres de los fabricantes que sólo fabrican muebles en Pino
+c) Obtener los nombres de los fabricantes que fabrican muebles para todos los ambientes
+d) Obtener los nombres de los fabricantes que sólo fabrican muebles para oficina
+e) Obtener los nombres de los fabricantes que sólo fabrican muebles para baño y cocina.
+f) Obtener los nombres de los fabricantes que producen muebles de cedro y roble.
+g) Obtener los nombres de los fabricantes que producen muebles de melamina o MDF
+
