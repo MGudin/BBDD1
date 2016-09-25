@@ -1,6 +1,13 @@
 # Resolucion
 
 
+## PREGUNTAS
+
+(?? es posible combinar condiciones en una sola seleccion)
+(?? Como poner desigual? -> != o ! (=) )
+(?? Elemetos repetidos de una relacion se juntan)
+(??? ESTA BIEN HECHO EL RENOMBRE? 4-C)
+
 ## Notacion
 
 · Proyección π
@@ -303,5 +310,234 @@ _FABRICANTE-MDF_ **←**  **π**(nombrefabricante) [ **σ**(nombremadera=MDF) _M
 
 
 _FABRICANTE-MELAMINA_ **U** _FABRICANTE-MDF_
+
+
+### Ejercicio 4
+
+Dados los siguientes esquemas
+
+
+**CLIENTE** (id\_cliente, nombreCliente, puntaje, edad)
+
+
+**AUTOMOVIL** (id\_automovil, marca, color)
+
+
+**RESERVA** (id\_cliente, id_automovil, fecha)
+
+
+Tener en cuenta que un cliente puede realizar diversas reservas
+
+
+*a) Obtener los colores de los automóviles reservados por Juan.*
+
+**Obtengo las reservas que hizo juan**
+
+
+_AUTOS-JUAN_ **←**  **π**(idAutomovil) [ **σ**(nombreCliente='Juan') [ _RESERVA_ **|X|** _CLIENTE_ ] ]
+
+
+**Obtengo los colores**
+
+
+**π**(color) [ _AUTOS-JUAN_ **|X|** _AUTOMOVIL_ ]
+
+
+**b) Obtener los nombres de los clientes que no han reservado un automóvil verde.**
+
+
+**Obtengo los id de los autos que NO son verdes**
+
+
+_AUTOS-NO-VERDE_ **←** [ **π**(idAutomovil) [ **σ**(color!='verde') _AUTOMOVIL_ ] ]
+
+
+**Cruzo con la tabla de reserva para obtener las reservas de autos que no son verdes y saco los id de los clientes de dichas reservas**
+
+
+_CLIENTES-NO-VERDE_ **←**  **π**(idCliente) [ _RESERVA_ **|X|** _AUTOS-NO-VERDE_ ]
+
+
+**Finalmente cruzo los datos para obtener el nombre de los clientes**
+
+
+**π**(nombre) [ _CLIENTE_ **|X|** _CLIENTES-NO-VERDE_ ]
+
+
+*c) Obtener los nombres de los clientes que han reservado por lo menos dos automóviles.*
+
+
+**Con el producto theta obtengo aquellas combinaciones con igual numero de cliente pero distinto automovil (osea clientes con mas de un auto reservado)**
+
+
+_RESERVA1_ **←**  **ρ**(RESERVA) _RESERVA1_ 
+
+
+_CLIENTE-2OMAS_ **←** [ **π**(RESERVA.idCliente) [ _RESERVA_ **|X|**(RESERVA.idCliente=RESERVA1.idCliente && RESERVA.idAutomovil!= RESERVA1.idAutomovil) _RESERVA1_ ] ]
+
+
+**Finalmente cruzo con la tabla cliente y obtengo los nombres**
+
+
+**π**(nombreCliente) [ _CLIENTE_ **|X|** _CLIENTE-2OMAS_ ]
+
+
+**d) Obtener el id de aquel cliente con el puntaje más alto.**
+
+
+**Similar al ejercicio anterior, hago un producto theta, pero con la condicion de que el puntaje de uno sea menor al del otro. De esta forma quedara fuera de la relacion aquel con puntaje mas alto. Pues su puntaje no sera menor que ninguno.**
+
+_CLIENTE1_ **←**  **ρ**(CLIENTE) _CLIENTE2_ 
+
+
+
+_CLIENTE-PUNTAJE-BAJO_ **←**  **π**(idCliente) [ _CLIENTE_ **|X|**(CLIENTE.puntaje < CLIENTE1.PUNTAJE) _CLIENTE1_ ]
+
+
+**Ahora tenemos una tabla con los id de los clientes cuyo puntaje no es maximo. Con una simple resta obtenemos el id del cliente con maximo puntaje**
+
+
+[ **π**(idCliente) _CLIENTE_ ] **–** _CLIENTE-PUNTAJE-BAJO_
+
+
+### Ejercicio 5
+
+Dados los siguientes esquemas
+
+**ESTUDIANTE** ( #legajo, nombreCompleto, nacionalidad, añoDeIngreso, códigoDeCarrera )
+
+
+**CARRERA** ( códigoDeCarrera, nombre )
+
+
+**INSCRIPCIONAMATERIA** ( #legajo, códigoDeMateria )
+
+
+**MATERIA** ( códigoDeMateria, nombre )
+
+
+*a) Obtener el nombre de los estudiantes que ingresaron en 2009.*
+
+
+**π**(nombreCompleto)  [ **σ**(anioDeIngreso=2009) _ESTUDIANTE_ ]
+
+
+*b) Obtener el nombre de los estudiantes con nacionalidad “Argentina” que NO estén en la carrera con código “LI07”*
+
+
+
+**π**(nombreCompleto) [ **σ**(nacionalidad='Argentina && codigoDeCarrera != 'LI07') _ESTUDIANTE_ ]
+
+
+
+*c) Obtener el legajo de los estudiantes que se hayan anotado en TODAS las materias.*
+
+
+_INSCRIPCIONAMATERIA_ **%** [ **π**(codigoDeMateria) _MATERIA_ ]
+
+
+### Ejercicio 6
+
+
+Dados los siguientes esquemas
+
+
+**ALUMNO** (#alumno, nombre)
+
+
+**CURSA** (#alumno, #curso)
+
+
+**CURSO** (#curso, nombre_curso)
+
+
+**PRACTICA** (#practica, #curso)
+
+
+**ENTREGA** (#alumno, #practica, nota)
+
+
+*a) Obtener #alumno y nombre de los alumnos que aprobaron con 7 o más todas las prácticas de los cursos que realizaron.*
+
+
+### Ejercicio 7
+
+
+Dados los siguientes esquemas
+
+
+**PDA** (imei, marca, numeroSerie)
+
+
+**JURISDICCIÓN** (idJurisdiccion, nombre)
+
+
+**CONDUCTOR** (dniConductor, nombre, apellido, idJurisdiccion)
+
+
+**TIPOINFRACCION** (codigo, descripcion, puntos, tipo)
+
+
+**ACTAINFRACCION** (#acta, imei, fecha, dniConductor, idJurisdiccion)
+
+
+**INFRACCIONACTA** (#acta, codigo)
+
+
+*a) Obtener los códigos de los tipos de infracciones que no fueron utilizadas en las actas labradas de la jurisdicción “La Plata”*
+
+
+**En primer lugar obtengo las actas que fueron labradas en la plata**
+
+
+_INFRACCIONLP_ **←** _ACTAINFRACCION_ **|X|** [ **σ**(nombre='La Plata') _JURISDICCION_ ] 
+
+
+**Ahora relacionamos las infracciones con sus codigos mediante INFRACCIONACTA y nos quedamos con dichos codigos. Tambien obtenemos todos los codigos **
+
+
+
+_CODIGOSLP_ **←**  **π**(codigo) [ _INFRACCIONLP_ **|X|** _INFRACCIONACTA_ ]
+
+
+_CODIGOS_ **←**  **π**(codigo) _INFRACCIONACTA_
+
+
+**Aquellos codigos que no esten en CODIGOSLP son los buscados**
+
+
+_CODIGOS_ **–** _CODIGOSLP_
+
+
+*b) Obtener los #Actas en donde el conductor pertenezca a la misma jurisdicción del lugar del labrado del acta*
+
+
+**Cruzamos CONDUCTOR con ACTAINFRACION para tener en la misma relacion el numero de acta junto con la jurisdiccion donde fue labrada y al jurisdiccion del conductor. Pero al hacer el producto natural tenemos el problema del campo idJurisdiccion que se llaman igual, por lo que entra dentro de la condicion de igualdad. Por esta razon primero debemos renombrar uno de los dos campos (en este caso el de conductor) para que la informacion no se pierda en la operacion**
+
+
+_NUEVOCONDUCTOR_ **←**  **ρ**(dniConductor, nombre, apellido, idJurisdiccionConductor) _CONDUCTOR_
+
+
+**π**(#acta)  **σ**(idJurisdiccion=idJusrisdiccionConductor) [ _ACTAINFRACCION_ **|X|** _NUEVOCONDUCTOR_ ]
+
+
+*c) Obtener los imei de PDA que han labrado actas de tipo “Velocidad” sólo en la ciudad de “Mar del Plata”.*
+
+
+**Como primer paso obtenemos el id de mar del plata para sacar aquellas actas de dicha jurisdiccion.  Tambien el codigo de infraccion de velocidad**
+
+
+
+
+_IDVELOCIDAD_ **←**  **π**(codigo)  [ **σ**(descripcion='velocidad') _TIPOINFRACCION_ ]
+
+
+_INFRACCIONMDQ_ **←**  _ACTAINFRACCION_ **|X|** [ **π**(idJurisdiccion) [**σ**(nombre='Mar del Plata') _JURISDICCION_ ] ]
+
+
+**Ahora con las infracciones de mdq, cruzamos la informacion con el id de velocidad y obtenemos todas las infracciones de mdq de velocidad. De esta relacion nos quedamos con los imei**
+
+
+**π**(imei) [ _INFRACCIONMQ_ **|X|** _IDVELOCIDAD_ ]
 
 
